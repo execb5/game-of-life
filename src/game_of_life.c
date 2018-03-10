@@ -14,18 +14,21 @@ int** board;
 
 void initialize_board()
 {
-	int i;
-	int j;
-	for (i = 0; i < max_y; i++)
-	{
-		for (j = 0; j < max_x; j++)
-		{
-			if ((rand() % 10) == 0)
-			{
-				board[i][j] = 1;
-			}
-		}
-	}
+	/*int i;*/
+	/*int j;*/
+	/*for (i = 0; i < max_y; i++)*/
+	/*{*/
+		/*for (j = 0; j < max_x; j++)*/
+		/*{*/
+			/*if ((rand() % 15) == 0)*/
+			/*{*/
+				/*board[i][j] = 1;*/
+			/*}*/
+		/*}*/
+	/*}*/
+	board[4][5] = 1;
+	board[5][5] = 1;
+	board[6][5] = 1;
 }
 
 void alloc_board()
@@ -49,6 +52,24 @@ void setup()
 	initialize_board();
 }
 
+int get_cell(int y, int x)
+{
+	if (y < 0 || x < 0 || y >= max_y || x >= max_x )
+	{
+		return 0;
+	}
+	return board[y][x];
+}
+
+void set_cell(int y, int x)
+{
+	if (y < 0 || x < 0 || y >= max_y || x >= max_x )
+	{
+		return;
+	}
+	board[y][x] = 1;
+}
+
 void draw_board()
 {
 	int i;
@@ -70,7 +91,6 @@ void update()
 	while(1)
 	{
 		clear();
-		mvprintw(y, x, "o");
 		draw_board();
 		refresh();
 		usleep(DELAY);

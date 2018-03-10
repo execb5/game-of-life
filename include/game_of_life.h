@@ -16,5 +16,7 @@ void alloc_board();
 void setup();
 void draw_board();
 void update();
+int get_cell(int y, int x);
+void set_cell(int y, int x);
 
 #endif /* GAME_OF_LIFE_H */
