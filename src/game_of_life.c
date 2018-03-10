@@ -3,6 +3,8 @@
 #include <ncurses.h>
 #include <unistd.h>
 #include <time.h>
+#include <string.h>
+#include <locale.h>
 
 int max_x;
 int max_y;
@@ -11,48 +13,67 @@ int y = 0;
 int next_x = 0;
 int direction = 1;
 int** board;
+int** next_frame;
+int offsets[8][2] = {
+	{-1, -1}, {-1, 0}, {-1, +1},
+	{ 0, -1},          { 0, +1},
+	{+1, -1}, {+1, 0}, {+1, +1} };
 
 void initialize_board()
 {
-	/*int i;*/
-	/*int j;*/
-	/*for (i = 0; i < max_y; i++)*/
-	/*{*/
-		/*for (j = 0; j < max_x; j++)*/
-		/*{*/
-			/*if ((rand() % 15) == 0)*/
-			/*{*/
-				/*board[i][j] = 1;*/
-			/*}*/
-		/*}*/
-	/*}*/
-	board[4][5] = 1;
-	board[5][5] = 1;
-	board[6][5] = 1;
+	int i;
+	int j;
+	for (i = 0; i < max_y; i++)
+	{
+		for (j = 0; j < max_x; j++)
+		{
+			if ((rand() % 15) == 0)
+			{
+				board[i][j] = 1;
+			}
+		}
+	}
 }
 
 void alloc_board()
 {
 	board = (int**) calloc(max_y, sizeof(int*));
+	next_frame = (int**) calloc(max_y, sizeof(int*));
 	int i;
 	for (i = 0; i < max_y; i++)
 	{
 		board[i] = (int*) calloc(max_x, sizeof(int));
+		next_frame[i] = (int*) calloc(max_x, sizeof(int));
 	}
+}
+
+void dealloc_board()
+{
+	int i;
+	for (i = 0; i < max_y; i++)
+	{
+		free(board[i]);
+		free(next_frame[i]);
+	}
+	free(board);
+	free(next_frame);
 }
 
 void setup()
 {
+	setlocale(LC_ALL, "en_US.UTF-8");
 	srand(time(NULL));
 	initscr();
 	noecho();
+	/*cbreak();*/
+	nodelay(stdscr, TRUE);
 	curs_set(FALSE);
 	getmaxyx(stdscr, max_y, max_x);
 	alloc_board();
 	initialize_board();
 }
 
-int get_cell(int y, int x)
+int has_neighbour_at(int y, int x)
 {
 	if (y < 0 || x < 0 || y >= max_y || x >= max_x )
 	{
@@ -70,6 +91,20 @@ void set_cell(int y, int x)
 	board[y][x] = 1;
 }
 
+int count_neighbours(int y, int x)
+{
+	int count = 0;
+	int i;
+	for (i = 0; i < 8; i++)
+	{
+		if (has_neighbour_at(y + offsets[i][0], x + offsets[i][1]))
+		{
+			count++;
+		}
+	}
+	return count;
+}
+
 void draw_board()
 {
 	int i;
@@ -80,8 +115,51 @@ void draw_board()
 		{
 			if (board[i][j])
 			{
-				mvprintw(i, j, "M");
+				mvprintw(i, j, "\u2588");
 			}
+		}
+	}
+}
+
+void apply_rules()
+{
+	int i;
+	int j;
+	int living;
+	int count;
+	for (i = 0; i < max_y; i++)
+	{
+		for (j = 0; j < max_x; j++)
+		{
+			living = board[i][j];
+			count = count_neighbours(i, j);
+			if (living && count < 2)
+			{
+				next_frame[i][j] = 0;
+			}
+			if (living && (count == 2 || count == 3))
+			{
+				next_frame[i][j] = 1;
+			}
+			if (living && count > 3)
+			{
+				next_frame[i][j] = 0;
+			}
+			if (!living && count == 3)
+			{
+				next_frame[i][j] = 1;
+			}
+		}
+	}
+	int** aux;
+	aux = board;
+	board = next_frame;
+	next_frame = aux;
+	for (i = 0; i < max_y; i++)
+	{
+		for (j = 0; j < max_x; j++)
+		{
+			next_frame[i][j] = 0;
 		}
 	}
 }
@@ -94,7 +172,12 @@ void update()
 		draw_board();
 		refresh();
 		usleep(DELAY);
-		getch();
+		apply_rules();
+		if ('q' == getch())
+		{
+			dealloc_board();
+			endwin();
+			break;
+		}
 	}
-	endwin();
 }

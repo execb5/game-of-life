@@ -1,22 +1,15 @@
 #ifndef GAME_OF_LIFE_H
 #define GAME_OF_LIFE_H
 
-#define DELAY 3000
-
-extern int max_x;
-extern int max_y;
-extern int x;
-extern int y;
-extern int next_x;
-extern int direction;
-extern int** board;
+#define DELAY 200000
 
 void initialize_board();
 void alloc_board();
 void setup();
 void draw_board();
 void update();
-int get_cell(int y, int x);
+int has_neighbour_at(int y, int x);
 void set_cell(int y, int x);
+int count_neighbours(int y, int x);
 
 #endif /* GAME_OF_LIFE_H */
