@@ -19,7 +19,7 @@ int offsets[8][2] = {
 	{ 0, -1},          { 0, +1},
 	{+1, -1}, {+1, 0}, {+1, +1} };
 
-void initialize_board()
+static void initialize_board()
 {
 	int i;
 	int j;
@@ -35,7 +35,7 @@ void initialize_board()
 	}
 }
 
-void alloc_board()
+static void alloc_board()
 {
 	board = (int**) calloc(max_y, sizeof(int*));
 	next_frame = (int**) calloc(max_y, sizeof(int*));
@@ -73,7 +73,7 @@ void setup()
 	initialize_board();
 }
 
-int has_neighbour_at(int y, int x)
+static int has_neighbour_at(int y, int x)
 {
 	if (y < 0 || x < 0 || y >= max_y || x >= max_x )
 	{
@@ -82,16 +82,7 @@ int has_neighbour_at(int y, int x)
 	return board[y][x];
 }
 
-void set_cell(int y, int x)
-{
-	if (y < 0 || x < 0 || y >= max_y || x >= max_x )
-	{
-		return;
-	}
-	board[y][x] = 1;
-}
-
-int count_neighbours(int y, int x)
+static int count_neighbours(int y, int x)
 {
 	int count = 0;
 	int i;
@@ -105,7 +96,7 @@ int count_neighbours(int y, int x)
 	return count;
 }
 
-void draw_board()
+static void draw_board()
 {
 	int i;
 	int j;
