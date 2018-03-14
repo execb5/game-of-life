@@ -72,18 +72,36 @@ static void dealloc_board()
 	free(next_frame);
 }
 
+
+void setup_simulation()
+{
+	nodelay(stdscr, TRUE);
+}
+
 void setup()
 {
+	// display block character
 	setlocale(LC_ALL, "en_US.UTF-8");
 	srand(time(NULL));
+
+	// curses related settings
 	initscr();
 	noecho();
-	/*cbreak();*/
-	nodelay(stdscr, TRUE);
+	cbreak();
 	curs_set(FALSE);
+	// curses mouse settings
+	// Enables keypad mode. This makes (at least for me) mouse events getting
+	// reported as KEY_MOUSE, instead as of random letters.
+	keypad(stdscr, TRUE);
+	// don't mask any mouse events
+	mousemask(ALL_MOUSE_EVENTS | REPORT_MOUSE_POSITION, NULL);
+	// makes the terminal report mouse movement events
+	printf("\033[?1003h\n");
+
+	// board related settings
 	getmaxyx(stdscr, max_y, max_x);
 	alloc_board();
-	initialize_board();
+	/*initialize_board();*/
 }
 
 static int has_neighbour_at(int y, int x)
@@ -162,6 +180,14 @@ static void apply_rules()
 	clear_next_frames();
 }
 
+static void prepare_to_exit()
+{
+	dealloc_board();
+	endwin();
+	// Disable mouse movement events, as l = low
+	printf("\033[?1003l\n");
+}
+
 void update()
 {
 	while(1)
@@ -169,13 +195,44 @@ void update()
 		clear();
 		draw_board();
 		refresh();
-		usleep(DELAY);
-		apply_rules();
-		if ('q' == getch())
+		/*usleep(DELAY);*/
+		/*apply_rules();*/
+		int c = getch();
+		if (c == 'q')
 		{
-			dealloc_board();
-			endwin();
+			prepare_to_exit();
 			break;
+		}
+		else
+		{
+			if (c == ERR)
+			{
+				printf("ERR\n");
+				prepare_to_exit();
+				break;
+			}
+			else
+			{
+				if (c == KEY_MOUSE)
+				{
+					MEVENT event;
+					if (getmouse(&event) == OK)
+					{
+						board[event.y][event.x] = 1;
+					}
+					else {
+						printf("bad mouse event\n");
+						prepare_to_exit();
+						break;
+					}
+				}
+				else
+				{
+					printf("key pressed\n");
+					prepare_to_exit();
+					break;
+				}
+			}
 		}
 	}
 }
