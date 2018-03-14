@@ -188,51 +188,53 @@ static void prepare_to_exit(void)
 	printf("\033[?1003l\n");
 }
 
-void update(void)
+void drawing_loop(void)
 {
-	while(1)
+	int first_init = 1;
+	while (1)
 	{
 		clear();
+		if (first_init)
+		{
+			mvprintw(0, 0, "Click anywhere on the screen to draw a block.");
+			mvprintw(1, 0, "Press enter to start the simulation.");
+			mvprintw(2, 0, "Press q to quit.");
+			first_init = 0;
+		}
 		draw_board();
 		refresh();
-		/*usleep(DELAY);*/
-		/*apply_rules();*/
 		int c = getch();
-		if (c == 'q')
+		if (c == '\n' || c == 'q')
 		{
-			prepare_to_exit();
 			break;
 		}
 		else
 		{
-			if (c == ERR)
+			if (c == KEY_MOUSE)
 			{
-				printf("ERR\n");
-				prepare_to_exit();
-				break;
-			}
-			else
-			{
-				if (c == KEY_MOUSE)
+				MEVENT event;
+				if (getmouse(&event) == OK)
 				{
-					MEVENT event;
-					if (getmouse(&event) == OK)
-					{
-						board[event.y][event.x] = 1;
-					}
-					else {
-						printf("bad mouse event\n");
-						prepare_to_exit();
-						break;
-					}
-				}
-				else
-				{
-					printf("key pressed\n");
-					prepare_to_exit();
-					break;
+					board[event.y][event.x] = 1;
 				}
 			}
 		}
+	}
+}
+
+void update(void)
+{
+	while (1)
+	{
+		if (getch() == 'q')
+		{
+			prepare_to_exit();
+			break;
+		}
+		clear();
+		draw_board();
+		refresh();
+		usleep(DELAY);
+		apply_rules();
 	}
 }
