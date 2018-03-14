@@ -19,7 +19,7 @@ int offsets[8][2] = {
 	{ 0, -1},          { 0, +1},
 	{+1, -1}, {+1, 0}, {+1, +1} };
 
-static void clear_next_frames()
+static void clear_next_frames(void)
 {
 	int i;
 	int j;
@@ -32,7 +32,7 @@ static void clear_next_frames()
 	}
 }
 
-static void initialize_board()
+static void initialize_board(void)
 {
 	int i;
 	int j;
@@ -48,7 +48,7 @@ static void initialize_board()
 	}
 }
 
-static void alloc_board()
+static void alloc_board(void)
 {
 	board = (int**) calloc(max_y, sizeof(int*));
 	next_frame = (int**) calloc(max_y, sizeof(int*));
@@ -60,7 +60,7 @@ static void alloc_board()
 	}
 }
 
-static void dealloc_board()
+static void dealloc_board(void)
 {
 	int i;
 	for (i = 0; i < max_y; i++)
@@ -73,12 +73,12 @@ static void dealloc_board()
 }
 
 
-void setup_simulation()
+void setup_simulation(void)
 {
 	nodelay(stdscr, TRUE);
 }
 
-void setup()
+void setup(void)
 {
 	// display block character
 	setlocale(LC_ALL, "en_US.UTF-8");
@@ -127,7 +127,7 @@ static int count_neighbours(int y, int x)
 	return count;
 }
 
-static void draw_board()
+static void draw_board(void)
 {
 	int i;
 	int j;
@@ -143,7 +143,7 @@ static void draw_board()
 	}
 }
 
-static void apply_rules()
+static void apply_rules(void)
 {
 	int i;
 	int j;
@@ -180,7 +180,7 @@ static void apply_rules()
 	clear_next_frames();
 }
 
-static void prepare_to_exit()
+static void prepare_to_exit(void)
 {
 	dealloc_board();
 	endwin();
@@ -188,7 +188,7 @@ static void prepare_to_exit()
 	printf("\033[?1003l\n");
 }
 
-void update()
+void update(void)
 {
 	while(1)
 	{
