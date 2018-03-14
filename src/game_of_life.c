@@ -19,7 +19,7 @@ int offsets[8][2] = {
 	{ 0, -1},          { 0, +1},
 	{+1, -1}, {+1, 0}, {+1, +1} };
 
-static void clear_next_frames()
+static void clear_next_frames(void)
 {
 	int i;
 	int j;
@@ -32,7 +32,7 @@ static void clear_next_frames()
 	}
 }
 
-static void initialize_board()
+static void initialize_board(void)
 {
 	int i;
 	int j;
@@ -48,7 +48,7 @@ static void initialize_board()
 	}
 }
 
-static void alloc_board()
+static void alloc_board(void)
 {
 	board = (int**) calloc(max_y, sizeof(int*));
 	next_frame = (int**) calloc(max_y, sizeof(int*));
@@ -60,7 +60,7 @@ static void alloc_board()
 	}
 }
 
-static void dealloc_board()
+static void dealloc_board(void)
 {
 	int i;
 	for (i = 0; i < max_y; i++)
@@ -72,18 +72,36 @@ static void dealloc_board()
 	free(next_frame);
 }
 
-void setup()
+
+void setup_simulation(void)
 {
+	nodelay(stdscr, TRUE);
+}
+
+void setup(void)
+{
+	// display block character
 	setlocale(LC_ALL, "en_US.UTF-8");
 	srand(time(NULL));
+
+	// curses related settings
 	initscr();
 	noecho();
-	/*cbreak();*/
-	nodelay(stdscr, TRUE);
+	cbreak();
 	curs_set(FALSE);
+	// curses mouse settings
+	// Enables keypad mode. This makes (at least for me) mouse events getting
+	// reported as KEY_MOUSE, instead as of random letters.
+	keypad(stdscr, TRUE);
+	// don't mask any mouse events
+	mousemask(ALL_MOUSE_EVENTS | REPORT_MOUSE_POSITION, NULL);
+	// makes the terminal report mouse movement events
+	printf("\033[?1003h\n");
+
+	// board related settings
 	getmaxyx(stdscr, max_y, max_x);
 	alloc_board();
-	initialize_board();
+	/*initialize_board();*/
 }
 
 static int has_neighbour_at(int y, int x)
@@ -109,7 +127,7 @@ static int count_neighbours(int y, int x)
 	return count;
 }
 
-static void draw_board()
+static void draw_board(void)
 {
 	int i;
 	int j;
@@ -125,7 +143,7 @@ static void draw_board()
 	}
 }
 
-static void apply_rules()
+static void apply_rules(void)
 {
 	int i;
 	int j;
@@ -162,20 +180,61 @@ static void apply_rules()
 	clear_next_frames();
 }
 
-void update()
+static void prepare_to_exit(void)
 {
-	while(1)
+	dealloc_board();
+	endwin();
+	// Disable mouse movement events, as l = low
+	printf("\033[?1003l\n");
+}
+
+void drawing_loop(void)
+{
+	int first_init = 1;
+	while (1)
 	{
+		clear();
+		if (first_init)
+		{
+			mvprintw(0, 0, "Click anywhere on the screen to draw a block.");
+			mvprintw(1, 0, "Press enter to start the simulation.");
+			mvprintw(2, 0, "Press q to quit.");
+			first_init = 0;
+		}
+		draw_board();
+		refresh();
+		int c = getch();
+		if (c == '\n' || c == 'q')
+		{
+			break;
+		}
+		else
+		{
+			if (c == KEY_MOUSE)
+			{
+				MEVENT event;
+				if (getmouse(&event) == OK)
+				{
+					board[event.y][event.x] = 1;
+				}
+			}
+		}
+	}
+}
+
+void update(void)
+{
+	while (1)
+	{
+		if (getch() == 'q')
+		{
+			prepare_to_exit();
+			break;
+		}
 		clear();
 		draw_board();
 		refresh();
 		usleep(DELAY);
 		apply_rules();
-		if ('q' == getch())
-		{
-			dealloc_board();
-			endwin();
-			break;
-		}
 	}
 }
