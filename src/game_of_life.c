@@ -60,7 +60,7 @@ static void alloc_board()
 	}
 }
 
-void dealloc_board()
+static void dealloc_board()
 {
 	int i;
 	for (i = 0; i < max_y; i++)
@@ -125,7 +125,7 @@ static void draw_board()
 	}
 }
 
-void apply_rules()
+static void apply_rules()
 {
 	int i;
 	int j;
