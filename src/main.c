@@ -6,7 +6,19 @@ int main(int argc, char** argv)
 {
 	if (argc < 2)
 	{
-		printf("");
+		printf("------------------------------------------------\n");
+		printf("USAGE:\n");
+		printf("\n");
+		printf("\tRandom initial state:\n");
+		printf("\t\t./main -r\n");
+		printf("\n");
+		printf("\tDrawing your initial state:\n");
+		printf("\t\t./main -i\n");
+		printf("\n");
+		printf("\tSee this text again:\n");
+		printf("\t\t./main\n");
+		printf("\n");
+		printf("------------------------------------------------\n");
 		return 0;
 	}
 	setup();
