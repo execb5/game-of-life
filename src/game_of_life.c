@@ -32,7 +32,7 @@ static void clear_next_frames(void)
 	}
 }
 
-static void initialize_board(void)
+void initialize_board(void)
 {
 	int i;
 	int j;

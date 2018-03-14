@@ -7,5 +7,6 @@ void setup(void);
 void setup_simulation(void);
 void update(void);
 void drawing_loop(void);
+void initialize_board(void);
 
 #endif /* GAME_OF_LIFE_H */
