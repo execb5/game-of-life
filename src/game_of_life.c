@@ -19,6 +19,19 @@ int offsets[8][2] = {
 	{ 0, -1},          { 0, +1},
 	{+1, -1}, {+1, 0}, {+1, +1} };
 
+static void clear_next_frames()
+{
+	int i;
+	int j;
+	for (i = 0; i < max_y; i++)
+	{
+		for (j = 0; j < max_x; j++)
+		{
+			next_frame[i][j] = 0;
+		}
+	}
+}
+
 static void initialize_board()
 {
 	int i;
@@ -47,7 +60,7 @@ static void alloc_board()
 	}
 }
 
-void dealloc_board()
+static void dealloc_board()
 {
 	int i;
 	for (i = 0; i < max_y; i++)
@@ -112,7 +125,7 @@ static void draw_board()
 	}
 }
 
-void apply_rules()
+static void apply_rules()
 {
 	int i;
 	int j;
@@ -146,13 +159,7 @@ void apply_rules()
 	aux = board;
 	board = next_frame;
 	next_frame = aux;
-	for (i = 0; i < max_y; i++)
-	{
-		for (j = 0; j < max_x; j++)
-		{
-			next_frame[i][j] = 0;
-		}
-	}
+	clear_next_frames();
 }
 
 void update()
