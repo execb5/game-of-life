@@ -40,7 +40,7 @@ void initialize_board(void)
 	{
 		for (j = 0; j < max_x; j++)
 		{
-			if ((rand() % 15) == 0)
+			if ((rand() % 10) == 0)
 			{
 				board[i][j] = 1;
 			}
@@ -94,7 +94,7 @@ void setup(void)
 	// reported as KEY_MOUSE, instead as of random letters.
 	keypad(stdscr, TRUE);
 	// don't mask any mouse events
-	mousemask(ALL_MOUSE_EVENTS | REPORT_MOUSE_POSITION, NULL);
+	mousemask(BUTTON1_PRESSED | REPORT_MOUSE_POSITION, NULL);
 	// makes the terminal report mouse movement events
 	printf("\033[?1003h\n");
 
