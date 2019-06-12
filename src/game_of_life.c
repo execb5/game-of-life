@@ -101,7 +101,6 @@ void setup(void)
 	// board related settings
 	getmaxyx(stdscr, max_y, max_x);
 	alloc_board();
-	/*initialize_board();*/
 }
 
 static int has_neighbour_at(int y, int x)
