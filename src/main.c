@@ -30,6 +30,10 @@ int main(int argc, char** argv)
 	{
 		drawing_loop();
 	}
+	if (strcmp("-f", argv[1]) == 0)
+	{
+		load_from_file(argv[2]);
+	}
 	setup_simulation();
 	update();
 	return 0;

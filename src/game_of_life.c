@@ -19,6 +19,40 @@ int offsets[8][2] = {
 	{ 0, -1},          { 0, +1},
 	{+1, -1}, {+1, 0}, {+1, +1} };
 
+void load_from_file(char* filepath)
+{
+	FILE* file = fopen ( filepath, "r" );
+
+	if (file != NULL)
+	{
+		char line[max_x];
+
+		int line_counter = 0;
+		while (fgets(line, sizeof(line), file) != NULL && line_counter <= max_y)
+		{
+			size_t ln = strlen(line) - 1;
+			if (line[ln] == '\n')
+			{
+				line[ln] = '\0';
+			}
+
+			int i;
+			for (i = 0; i < strlen(line); i++)
+			{
+				if(line[i] != ' ')
+					board[line_counter][i] = 1;
+			}
+			line_counter++;
+		}
+		fclose(file);
+	}
+	else
+	{
+		perror(filepath);
+		exit(1);
+	}
+}
+
 static void clear_next_frames(void)
 {
 	int i;

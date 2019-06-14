@@ -8,5 +8,6 @@ void setup_simulation(void);
 void update(void);
 void drawing_loop(void);
 void initialize_board(void);
+void load_from_file(char* filepath);
 
 #endif /* GAME_OF_LIFE_H */
