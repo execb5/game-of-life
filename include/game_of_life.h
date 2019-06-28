@@ -1,7 +1,7 @@
 #ifndef GAME_OF_LIFE_H
 #define GAME_OF_LIFE_H
 
-#define DELAY 200000
+#define FRAMES_PER_SECOND 60
 
 void setup(void);
 void setup_simulation(void);

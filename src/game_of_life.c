@@ -226,7 +226,7 @@ void drawing_loop(void)
 	int first_init = 1;
 	while (1)
 	{
-		clear();
+		erase();
 		if (first_init)
 		{
 			mvprintw(0, 0, "Click anywhere on the screen to draw a block.");
@@ -264,10 +264,10 @@ void update(void)
 			prepare_to_exit();
 			break;
 		}
-		clear();
+		erase();
 		draw_board();
+		napms(1000 / FRAMES_PER_SECOND);
 		refresh();
-		usleep(DELAY);
 		apply_rules();
 	}
 }
