@@ -6,15 +6,11 @@
 #include <string.h>
 #include <locale.h>
 
-int max_x;
-int max_y;
-int x = 0;
-int y = 0;
-int next_x = 0;
-int direction = 1;
-int** board;
-int** next_frame;
-int offsets[8][2] = {
+static int max_x;
+static int max_y;
+static int** board;
+static int** next_frame;
+static int offsets[8][2] = {
 	{-1, -1}, {-1, 0}, {-1, +1},
 	{ 0, -1},          { 0, +1},
 	{+1, -1}, {+1, 0}, {+1, +1} };
