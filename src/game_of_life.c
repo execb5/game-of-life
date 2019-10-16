@@ -24,7 +24,7 @@ void load_from_file(char* filepath)
 		char line[max_x];
 
 		int line_counter = 0;
-		while (fgets(line, sizeof(line), file) != NULL && line_counter <= max_y)
+		while (fgets(line, sizeof(line), file) != NULL && line_counter <= max_y - TMUX_FIX)
 		{
 			size_t ln = strlen(line) - 1;
 			if (line[ln] == '\n')

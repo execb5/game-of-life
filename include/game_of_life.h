@@ -2,6 +2,7 @@
 #define GAME_OF_LIFE_H
 
 #define FRAMES_PER_SECOND 60
+#define TMUX_FIX 1
 
 void setup(void);
 void setup_simulation(void);
