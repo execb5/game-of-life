@@ -15,6 +15,9 @@ int main(int argc, char** argv)
 		printf("\tDrawing your initial state:\n");
 		printf("\t\t./main -i\n");
 		printf("\n");
+		printf("\tLoad from file:\n");
+		printf("\t\t./main -f file/path/here\n");
+		printf("\n");
 		printf("\tSee this text again:\n");
 		printf("\t\t./main\n");
 		printf("\n");
